@@ -35,9 +35,9 @@ def calculate_subpoints(satellites, start_time, duration_hours=24):
             data.append({
                 'Timestamp': current_time.utc_datetime(),
                 'Satellite': satellite.name,
-                'Latitude': subpoint.latitude.degrees,
-                'Longitude': subpoint.longitude.degrees,
-                # 'Load': region_load,
+                # 'Latitude': subpoint.latitude.degrees,
+                # 'Longitude': subpoint.longitude.degrees,
+                'Load': region_load,
             })
         # data 里存储了这一时刻所有卫星的负载情况
 
@@ -54,5 +54,5 @@ def main(file_path):
 # 文件路径
 file_path = 'guowang_tle.txt'  # TLE数据文件路径
 df = main(file_path)
-df.to_csv('satellite_subpoints.csv', index=False)
-print("计算完成，结果已保存到 'satellite_subpoints.csv'")
+df.to_csv('satellite_permin_load.csv', index=False)
+print("计算完成，结果已保存到 'satellite_permin_load.csv'")

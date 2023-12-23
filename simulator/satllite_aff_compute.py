@@ -19,13 +19,17 @@ def load_tle(file_path):
         satellites.append(satellite)
     return satellites
 
+# 计算两个节点的 affinity
+def caculate_affinity(min_diff, max_diff, load1, load2):
+    affinity = (abs(load1 - load2) - min_diff) / (max_diff - min_diff)
+    return
 
 # 计算星下点坐标
 def calculate_subpoints(satellites, start_time, duration_hours=24):
     end_time = start_time + timedelta(hours=duration_hours)
-    data = []
     current_time = start_time
     while current_time.utc_datetime() < end_time.utc_datetime():
+        data = []
         print(current_time.utc_datetime())
         for satellite in satellites:
             geocentric = satellite.at(current_time)
@@ -35,8 +39,8 @@ def calculate_subpoints(satellites, start_time, duration_hours=24):
             data.append({
                 'Timestamp': current_time.utc_datetime(),
                 'Satellite': satellite.name,
-                'Latitude': subpoint.latitude.degrees,
-                'Longitude': subpoint.longitude.degrees,
+                # 'Latitude': subpoint.latitude.degrees,
+                # 'Longitude': subpoint.longitude.degrees,
                 # 'Load': region_load,
             })
         # data 里存储了这一时刻所有卫星的负载情况
