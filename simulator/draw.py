@@ -27,14 +27,20 @@ def to_percent(y, position):
 
 plt.rcParams.update({'font.size': 14})
 smoothed_data1 = data1['Overall Load STD'].rolling(window=10).mean()
+average1 = np.mean(data1['Overall Load STD'])
 plt.plot(data1['Timestamp'], smoothed_data1, label='orbit')  # 绘制折线图
+plt.axhline(y=average1, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
+plt.annotate('{:.4f}'.format(average1), xy=(data1['Timestamp'][10], average1), xytext=(data1['Timestamp'][10], average1))
 
 smoothed_data2 = data2['Overall Load STD'].rolling(window=10).mean()
+average2 = np.mean(data2['Overall Load STD'])
 plt.plot(data2['Timestamp'], smoothed_data2, label='random')
+plt.axhline(y=average2, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
+plt.annotate('{:.4f}'.format(average2), xy=(data2['Timestamp'][10], average2), xytext=(data2['Timestamp'][10], average2))
 
-plt.title('Overall Load Standard Deviation Over Time')  # 添加标题
-plt.xlabel('Timestamp')  # 添加X轴标签
-plt.ylabel('Standard Deviation of Load')  # 添加Y轴标签
+
+plt.xlabel('时间')  # 添加X轴标签
+plt.ylabel('卫星分组负载标准差')  # 添加Y轴标签
 # plt.xticks(rotation=45)  # 旋转X轴标签，以便更好地显示
 
 # 设置x轴主要刻度定位器为每两小时一个刻度
@@ -47,6 +53,9 @@ plt.xticks(rotation=45)
 
 # 自动调整x轴标签，防止重叠
 plt.gcf().autofmt_xdate()
+
+# 显示图例
+plt.legend()
 
 # 显示图表
 plt.show()

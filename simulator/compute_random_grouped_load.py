@@ -106,5 +106,5 @@ def main(file_path):
     return df
 # 文件路径
 df = main(tle_file_path)
-df.to_csv('satellite_random_group_load.csv', index=False)
-print("计算完成，结果已保存到 'satellite_random_group_load.csv'")
+df.to_csv('satellite_random_group_load2.csv', index=False)
+print("计算完成，结果已保存到 'satellite_random_group_load2.csv'")
