@@ -12,7 +12,7 @@ plt.rcParams["font.sans-serif"]=["Arial Unicode MS"] #设置字体
 plt.rcParams["axes.unicode_minus"]=False #该语句解决图像中的“-”负号的乱码问题
 
 # 读取CSV文件
-file_path1 = 'satellite_orbit_group_load.csv'  # 替换为您的CSV文件路径
+file_path1 = 'satellite_ours_group_load.csv'  # 替换为您的CSV文件路径
 data1 = pd.read_csv(file_path1)
 
 file_path2 = 'satellite_random_group_load.csv'
@@ -28,7 +28,7 @@ def to_percent(y, position):
 plt.rcParams.update({'font.size': 14})
 smoothed_data1 = data1['Overall Load STD'].rolling(window=10).mean()
 average1 = np.mean(data1['Overall Load STD'])
-plt.plot(data1['Timestamp'], smoothed_data1, label='orbit')  # 绘制折线图
+plt.plot(data1['Timestamp'], smoothed_data1, label='ours')  # 绘制折线图
 plt.axhline(y=average1, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
 plt.annotate('{:.4f}'.format(average1), xy=(data1['Timestamp'][10], average1), xytext=(data1['Timestamp'][10], average1))
 

@@ -127,7 +127,7 @@ def group_orbit_satellites(tle_path, num_groups=40, group_size=12):
 
 # Call the function and get the groups
 tle_file_path = 'guowang_tle.txt'
-satellite_groups = group_satellites(tle_file_path)
+satellite_groups = group_orbit_satellites(tle_file_path)
 
 # Displaying a portion of the result for verification
 list(satellite_groups.items())[:]  # Displaying first 15 items as an example

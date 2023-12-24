@@ -2,7 +2,6 @@ from skyfield.api import load, EarthSatellite
 from datetime import datetime, timedelta
 import pandas as pd
 from region_load import get_region_load
-import random
 
 # 加载时间模块
 ts = load.timescale()
@@ -19,36 +18,6 @@ def load_tle(file_path):
         satellite = EarthSatellite(line1, line2, name, ts)
         satellites.append(satellite)
     return satellites
-
-def randomly_group_satellites(tle_path, num_groups=50):
-    """
-    Randomly group satellites from a TLE file into a specified number of groups.
-
-    :param tle_path: Path to the TLE file.
-    :param num_groups: Number of groups to divide the satellites into.
-    :return: Dictionary with satellite names as keys and their group as values.
-    """
-    with open(tle_path, 'r') as file:
-        lines = file.readlines()
-
-    # Extract satellite names
-    satellite_names = [line.strip() for line in lines if line.startswith('V')]
-
-    # Randomly shuffle the satellite list
-    random.shuffle(satellite_names)
-
-    # Initialize the dictionary to hold the group assignments
-    satellite_groups = {}
-    satellites_per_group = len(satellite_names) // num_groups
-
-    # Assign satellites to groups
-    for group_index in range(num_groups):
-        for satellite_index in range(satellites_per_group):
-            satellite = satellite_names[group_index * satellites_per_group + satellite_index]
-            satellite_groups[satellite] = f'Group {group_index + 1}'
-
-    return satellite_groups
-
 
 
 # 计算星下点坐标
@@ -91,10 +60,19 @@ satellite_groups = {}
 # }
 
 # grouped by orbit
+def ours_group_satellites(grouped_path, num_groups=40, group_size=12):
+    df = pd.read_csv(grouped_path)
+
+    # Convert the DataFrame to a dictionary with the required format
+    satellite_groups = {f"{row['Node']}": f"{row['Cluster']}" for _, row in df.iterrows()}
+
+    return satellite_groups
 
 # Call the function and get the groups
 tle_file_path = 'guowang_tle.txt'
-satellite_groups = randomly_group_satellites(tle_file_path)
+groupedn_file_path = 'node_cluster_50_assignments_affinity.csv'
+satellite_groups = ours_group_satellites(groupedn_file_path)
+# print(satellite_groups)
 
 # Displaying a portion of the result for verification
 list(satellite_groups.items())[:]  # Displaying first 15 items as an example
@@ -106,5 +84,5 @@ def main(file_path):
     return df
 # 文件路径
 df = main(tle_file_path)
-df.to_csv('satellite_random_group_50_load.csv', index=False)
-print("计算完成，结果已保存到 'satellite_random_group_50_load.csv'")
+df.to_csv('satellite_ours_group_50_load.csv', index=False)
+print("计算完成，结果已保存到 'satellite_ours_group_50_load.csv'")
