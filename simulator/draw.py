@@ -1,61 +1,53 @@
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
 import matplotlib.dates as mdates
-import numpy as np
-import json
-from dateutil import parser
-import matplotlib as mpl
 import pandas as pd
+import numpy as np
 from datetime import datetime
-# mpl.rcParams['figure.dpi'] = 300
-plt.rcParams["font.sans-serif"]=["Arial Unicode MS"] #设置字体
-plt.rcParams["axes.unicode_minus"]=False #该语句解决图像中的“-”负号的乱码问题
 
-# 读取CSV文件
-file_path1 = 'satellite_ours_group_load.csv'  # 替换为您的CSV文件路径
-data1 = pd.read_csv(file_path1)
-
-file_path2 = 'satellite_random_group_load.csv'
-data2 = pd.read_csv(file_path2)
-
-# 确保'Timestamp'列是datetime类型
-data1['Timestamp'] = pd.to_datetime(data1['Timestamp'])
-data2['Timestamp'] = pd.to_datetime(data2['Timestamp'])
-def to_percent(y, position):
-    return '{:.0f}%'.format(100 * y)
-
-
+# 设置字体和图表属性
+plt.rcParams["font.sans-serif"]=['simsun']  # 设置字体
+plt.rcParams["axes.unicode_minus"]=False  # 解决负号乱码问题
 plt.rcParams.update({'font.size': 14})
-smoothed_data1 = data1['Overall Load STD'].rolling(window=10).mean()
-average1 = np.mean(data1['Overall Load STD'])
-plt.plot(data1['Timestamp'], smoothed_data1, label='ours')  # 绘制折线图
-plt.axhline(y=average1, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
-plt.annotate('{:.4f}'.format(average1), xy=(data1['Timestamp'][10], average1), xytext=(data1['Timestamp'][10], average1))
 
-smoothed_data2 = data2['Overall Load STD'].rolling(window=10).mean()
-average2 = np.mean(data2['Overall Load STD'])
-plt.plot(data2['Timestamp'], smoothed_data2, label='random')
-plt.axhline(y=average2, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
-plt.annotate('{:.4f}'.format(average2), xy=(data2['Timestamp'][10], average2), xytext=(data2['Timestamp'][10], average2))
+# 文件路径列表
+file_paths = [
+    # 'satellite_orbit_group_load_12H.csv',
+    'guowang_random_group_30_experiments_avg_load.csv',
+    'satellite_ours_group_30_load_12H.csv'
+]
 
+# 标签列表
+labels = [
+    # 'grouped by orbit',
 
-plt.xlabel('时间')  # 添加X轴标签
-plt.ylabel('卫星分组负载标准差')  # 添加Y轴标签
-# plt.xticks(rotation=45)  # 旋转X轴标签，以便更好地显示
+    'grouped by random',
 
-# 设置x轴主要刻度定位器为每两小时一个刻度
-plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=2))
-# 设置x轴主要刻度格式器显示小时和分钟
+    'grouped by ours'
+
+]
+
+# 读取并绘制每个文件的数据
+for file_path, label in zip(file_paths, labels):
+    data = pd.read_csv(file_path)
+    data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+
+    # 平滑数据
+    smoothed_data = data['Overall Load STD'].rolling(window=10).mean()
+    average = np.mean(data['Overall Load STD'])
+
+    plt.plot(data['Timestamp'], smoothed_data, label=label)  # 绘制折线图
+    plt.axhline(y=average, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
+    plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average))
+
+# 设置图表元素
+plt.xlabel('时间')
+plt.ylabel('卫星分组负载标准差')
+plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-
-# 旋转日期标记，以便它们不会重叠
 plt.xticks(rotation=45)
-
-# 自动调整x轴标签，防止重叠
 plt.gcf().autofmt_xdate()
-
-# 显示图例
 plt.legend()
+plt.title('卫星分组负载标准差比较')
 
 # 显示图表
 plt.show()

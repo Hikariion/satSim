@@ -20,48 +20,9 @@ def load_tle(file_path):
     return satellites
 
 
-# 首先，我们将480颗卫星展开成一个按照卫星顺序排列的数组
-# 然后，我们将这个数组切分成若干个3x4的长方形
-
-def reshape_and_slice_satellites(tle_path, num_columns=3, num_rows=4):
-    """
-    Reshape satellite names into an array and slice it into several 3x4 rectangles.
-
-    :param tle_path: Path to the TLE file.
-    :param num_columns: Number of columns in each rectangle (width).
-    :param num_rows: Number of rows in each rectangle (height).
-    :return: List of rectangles, each containing 12 satellite names.
-    """
-    with open(tle_path, 'r') as file:
-        lines = file.readlines()
-
-    # Extract satellite names
-    satellite_names = [line.strip() for line in lines if line.startswith('V')]
-
-    # Ensure we have the correct total number of satellites
-    if len(satellite_names) != 480:
-        raise ValueError("The number of satellites does not match the expected total of 480.")
-
-    # Reshape the list into an array with columns representing satellites in order
-    satellites_array = [satellite_names[i:i + 12] for i in range(0, len(satellite_names), 12)]
-
-    # Slice the array into 3x4 rectangles
-    rectangles = []
-    for column_group in range(0, len(satellites_array), num_columns):
-        for row in range(num_rows):
-            rectangle = []
-            for column in range(num_columns):
-                satellite_index = column_group + column
-                if satellite_index < len(satellites_array):
-                    rectangle.append(satellites_array[satellite_index][row])
-            rectangles.append(rectangle)
-
-    return rectangles
-
-
 
 # 计算星下点坐标
-def calculate_subpoints(satellites, start_time, duration_hours=24):
+def calculate_subpoints(satellites, start_time, duration_hours=12):
     end_time = start_time + timedelta(hours=duration_hours)
     data = []
     current_time = start_time
@@ -87,7 +48,7 @@ def calculate_subpoints(satellites, start_time, duration_hours=24):
                 'Overall Load STD': overall_std,
             })
 
-        current_time += timedelta(minutes=10)
+        current_time += timedelta(minutes=2)
     return pd.DataFrame(data)
 
 satellite_groups = {}
@@ -100,7 +61,7 @@ satellite_groups = {}
 # }
 
 # grouped by orbit
-def group_orbit_satellites(tle_path, num_groups=40, group_size=12):
+def group_orbit_satellites(tle_path, num_groups=30, group_size=16):
     """
     Function to group satellites from a TLE file into specified number of groups.
 
@@ -139,5 +100,5 @@ def main(file_path):
     return df
 # 文件路径
 df = main(tle_file_path)
-df.to_csv('satellite_orbit_group_load.csv', index=False)
-print("计算完成，结果已保存到 'satellite_orbit_group_load.csv'")
+df.to_csv('satellite_orbit_group_load_12H.csv', index=False)
+print("计算完成，结果已保存到 'satellite_orbit_group_load_12H.csv'")

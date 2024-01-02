@@ -21,7 +21,7 @@ def load_tle(file_path):
 
 
 # 计算星下点坐标
-def calculate_subpoints(satellites, start_time, duration_hours=24):
+def calculate_subpoints(satellites, start_time, duration_hours=12):
     end_time = start_time + timedelta(hours=duration_hours)
     data = []
     current_time = start_time
@@ -47,7 +47,7 @@ def calculate_subpoints(satellites, start_time, duration_hours=24):
                 'Overall Load STD': overall_std,
             })
 
-        current_time += timedelta(minutes=10)
+        current_time += timedelta(minutes=2)
     return pd.DataFrame(data)
 
 satellite_groups = {}
@@ -84,5 +84,5 @@ def main(file_path):
     return df
 # 文件路径
 df = main(tle_file_path)
-df.to_csv('satellite_ours_group_50_load.csv', index=False)
-print("计算完成，结果已保存到 'satellite_ours_group_50_load.csv'")
+df.to_csv('satellite_ours_group_30_load_12H.csv', index=False)
+print("计算完成，结果已保存到 'satellite_ours_group_30_load_12H.csv'")
