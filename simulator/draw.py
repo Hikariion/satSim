@@ -47,7 +47,7 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 plt.xticks(rotation=45)
 plt.gcf().autofmt_xdate()
 plt.legend()
-plt.title('卫星分组负载标准差比较')
+plt.title('卫星分组负载标准差比较（30组）')
 
 # 显示图表
 plt.show()

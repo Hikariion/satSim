@@ -13,7 +13,7 @@ affinity_matrix_df.head()
 features = affinity_matrix_df.values
 
 # Number of clusters (groups)
-num_clusters = 30
+num_clusters = 50
 
 # Applying K-means clustering using the affinity matrix
 kmeans = KMeans(n_clusters=num_clusters, random_state=0)
@@ -23,5 +23,5 @@ clusters = kmeans.fit_predict(features)
 cluster_assignments_df = pd.DataFrame({'Node': [f"V GUOWANG #{i+1}" for i in range(len(clusters))], 'Cluster': [f"Group{c+1}" for c in clusters]})
 
 # Save the DataFrame to a CSV file
-output_file_path = 'node_cluster_30_assignments_affinity.csv'
+output_file_path = 'node_cluster_50_assignments_affinity.csv'
 cluster_assignments_df.to_csv(output_file_path, index=False)

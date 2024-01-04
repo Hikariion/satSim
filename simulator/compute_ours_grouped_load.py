@@ -70,7 +70,7 @@ def ours_group_satellites(grouped_path, num_groups=40, group_size=12):
 
 # Call the function and get the groups
 tle_file_path = 'guowang_tle.txt'
-groupedn_file_path = 'node_cluster_50_assignments_affinity.csv'
+groupedn_file_path = 'node_cluster_30_assignments_affinity.csv'
 satellite_groups = ours_group_satellites(groupedn_file_path)
 # print(satellite_groups)
 
