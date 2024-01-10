@@ -23,13 +23,18 @@ def plot_cdf(file_path, label):
     # p50分位点
     idx_50 = np.searchsorted(cdf, 0.5)
     plt.axvline(sorted_delays[idx_50], color=line_color, linestyle='--', ymax=cdf[idx_50])
-    plt.annotate('50%: {:.2f}'.format(sorted_delays[idx_50]), xy=(sorted_delays[idx_50], cdf[idx_50]), xytext=(sorted_delays[idx_50]+0.05, cdf[idx_50]-0.03))
+    plt.annotate('50%:{:.2f}'.format(sorted_delays[idx_50]), xy=(sorted_delays[idx_50], cdf[idx_50]), xytext=(sorted_delays[idx_50]+0.05, cdf[idx_50]-0.03))
     plt.plot([sorted_delays[idx_50]], [cdf[idx_50]], 'o', color=line_color)
     # p90分位点
     idx_90 = np.searchsorted(cdf, 0.9)
     plt.axvline(sorted_delays[idx_90], color=line_color, linestyle=':', ymax=cdf[idx_90] - 0.03)
-    plt.annotate('90%: {:.2f}'.format(sorted_delays[idx_90]), xy=(sorted_delays[idx_90], cdf[idx_90]), xytext=(sorted_delays[idx_90]+0.05, cdf[idx_90]-0.03))
+    plt.annotate('90%:{:.2f}'.format(sorted_delays[idx_90]), xy=(sorted_delays[idx_90], cdf[idx_90]), xytext=(sorted_delays[idx_90]+0.05, cdf[idx_90]-0.03))
     plt.plot([sorted_delays[idx_90]], [cdf[idx_90]], 'o', color=line_color)
+    # p99分位点
+    idx_99 = np.searchsorted(cdf, 0.99)
+    plt.axvline(sorted_delays[idx_99], color=line_color, linestyle=':', ymax=cdf[idx_99] - 0.03)
+    plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]), xytext=(sorted_delays[idx_99]-0.03, cdf[idx_99]-0.03))
+    plt.plot([sorted_delays[idx_99]], [cdf[idx_99]], 'o', color=line_color)
 
 
 
