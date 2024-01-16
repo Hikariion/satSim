@@ -38,21 +38,37 @@ def get_distance(satellite: EarthSatellite, ground_station, time):
     return distance
 
 
-# 计算卫星距离指定卫星的距离
-def calculate_distances_to_satellite(satellites, target_satellite_name, ts, time):
+# 找出最近 n 跳的卫星集合
+def calculate_distances_to_satellite(satellites, target_satellite_name, ts, time, n=1):
     target_satellite = satellites.get(target_satellite_name)
     if not target_satellite:
         return "Target satellite not found"
 
-    target_position = target_satellite.at(time)
+    # 初始化集合包含目标卫星
+    current_satellites = {target_satellite_name}
 
-    distances = []
-    for name, sat in satellites.items():
-        if name != target_satellite_name:
-            distance = (sat.at(time) - target_position).distance().km
-            distances.append((name, distance))
+    for _ in range(n):
+        next_satellites = set()
+        for satellite_name in current_satellites:
+            satellite = satellites.get(satellite_name)
+            satellite_position = satellite.at(time)
 
-    return sorted(distances, key=lambda x: x[1])[:4]
+            # 计算距离并且排序
+            distances = []
+            for name, sat in satellites.items():
+                if name != satellite_name:
+                    if name != satellite_name:
+                        distance = (sat.at(time) - satellite_position).distance().km
+                        distances.append((name, distance))
+
+            closest = sorted(distances, key=lambda x: x[1])[:4]
+            next_satellites.update([name for name, _ in closest])
+
+        # 更新当前卫星集合
+        current_satellites = next_satellites
+
+
+    return list(current_satellites)
 
 def main():
     start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
@@ -81,7 +97,7 @@ def main():
                 current_closest_satellite = satellite
         if current_closest_satellite != previous_closest_satellite and previous_closest_satellite is not None:
             # get peers near cloest satellite
-            nearest_satellites = calculate_distances_to_satellite(satellites, current_closest_satellite.name, ts, time)
+            nearest_satellites = calculate_distances_to_satellite(satellites, current_closest_satellite.name, ts, time, 2)
             print(nearest_satellites)
             migrate_times += 1  # Increment the migration count
 
