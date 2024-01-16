@@ -86,6 +86,7 @@ def main():
 
     closest_distances = []
 
+    # TODO: 获得预计时间内的满足时延约束的集合
     for time in times:
         # print(time.utc_datetime())
         min_distance = float('inf')
@@ -103,6 +104,10 @@ def main():
 
         previous_closest_satellite = current_closest_satellite
         closest_distances.append(min_distance)
+
+    # TODO: 计算迁移路径
+
+    # TODO: 计算总时延
 
 if __name__ == '__main__':
     main()
