@@ -1,3 +1,5 @@
+import random
+
 from skyfield.api import Topos, load, EarthSatellite, utc
 from datetime import timedelta
 from collections import deque
@@ -42,9 +44,13 @@ def get_distance(satellite: EarthSatellite, ground_station, time):
     distance = np.linalg.norm(diff)
     return distance
 
-def get_hops(satellites, source_satellite_name, target_satellite_name, ts, time):
+def get_hops(satellites, source_satellite_name, target_satellite_name, time):
     if source_satellite_name not in satellites or target_satellite_name not in satellites:
-        return "Source or target satellite not found"
+        raise "Source or target satellite not found"
+
+    if source_satellite_name == target_satellite_name:
+        return 0
+
 
     # 初始化队列和访问过的卫星集合
     queue = deque([(source_satellite_name, 0)])
@@ -66,18 +72,18 @@ def get_hops(satellites, source_satellite_name, target_satellite_name, ts, time)
                 distance = (sat.at(time) - current_satellite_position).distance().km
                 distances.append((name, distance))
 
-        closest_satellites = sorted(distances, key=lambda x: x[1])[:4]
+        closest_satellites = sorted(distances, key=lambda x: x[1])[:5]
         for satellite_name, _ in closest_satellites:
             if satellite_name not in visited:
                 queue.append((satellite_name, hops + 1))
                 visited.add(satellite_name)
 
-        return "Target satellite not reachable"
+    raise "Target satellite not reachable"
 
 
 
 # 找出最近 n 跳的卫星集合
-def calculate_distances_to_satellite(satellites, target_satellite_name, ts, time, n=1):
+def calculate_distances_to_satellite(satellites, target_satellite_name, time, n=1):
     target_satellite = satellites.get(target_satellite_name)
     if not target_satellite:
         return "Target satellite not found"
@@ -99,7 +105,7 @@ def calculate_distances_to_satellite(satellites, target_satellite_name, ts, time
                         distance = (sat.at(time) - satellite_position).distance().km
                         distances.append((name, distance))
 
-            closest = sorted(distances, key=lambda x: x[1])[:4]
+            closest = sorted(distances, key=lambda x: x[1])[:5]
             next_satellites.update([name for name, _ in closest])
 
         # 更新当前卫星集合
@@ -116,19 +122,13 @@ def get_S():
     # Load the satellites from the TLE data file
     satellites = parse_tle(file_path)
 
-    # Calculate the closest satellite at each time step
-    speed_of_light = 299792.458  # in km/s
     times = ts.linspace(start_time, end_time, 3600)
 
     previous_closest_satellite = None
-    migrate_times = 0
 
-    closest_distances = []
 
     S = []
 
-
-    # TODO: 获得预计时间内的满足时延约束的集合
     for time in times:
         print(time.utc_datetime())
         min_distance = float('inf')
@@ -138,65 +138,43 @@ def get_S():
             if distance < min_distance:
                 min_distance = distance
                 current_closest_satellite = satellite
-        if current_closest_satellite != previous_closest_satellite and previous_closest_satellite is not None:
-            # get peers near cloest satellite
-            # nearest_satellites = calculate_distances_to_satellite(satellites, current_closest_satellite.name, ts, time, 2)
-            # print(nearest_satellites)
-            migrate_times += 1  # Increment the migration count
-            S.append(calculate_distances_to_satellite(satellites, current_closest_satellite.name, ts, time, 1))
-
+        if current_closest_satellite != previous_closest_satellite:
+            S.append(calculate_distances_to_satellite(satellites, current_closest_satellite.name, time, 2))
 
         previous_closest_satellite = current_closest_satellite
-        closest_distances.append(min_distance)
 
     print(len(S))
     # 将 S 持久化
-    with open('S.json', 'w') as file:
+    with open('S_2hop.json', 'w') as file:
         json.dump(S, file)
+    # S 作为 txt 持久化
+    with open('S_2hop.txt', 'w') as file:
+        for s in S:
+            file.write(str(s)+'\n')
 
 
 # 计算迁移路径
 def get_migration_path():
     # 读 S
-    S = []
-    with open('S.json', 'r') as file:
+    with open('S_2hop.json', 'r') as file:
         S = json.load(file)
 
 
-    # 对S进行转换
-    transformed_S = []
-    for sublist in S:
-        # print(sublist)
-        transformed_sublist = []
-        for item in sublist:
-            # print(item)
-            if '#' in item:
-                number_part = item.split('#')[-1].strip()
-                if number_part.isdigit():
-                    transformed_sublist.append(int(number_part))
-                else:
-                    print(f"Warning: Found an invalid number format in '{item}'")
-            else:
-                print(f"Warning: No '#' found in '{item}'")
-        transformed_S.append(transformed_sublist)
-
-    print(transformed_S)
-
     # dp
-    for s in transformed_S:
+    for s in S:
         s.sort()
 
-    n = len(transformed_S)
-    dp = [[float('inf')]*len(transformed_S[i]) for i in range(n)]
-    pre = [[-1]*len(transformed_S[i]) for i in range(n)]
+    n = len(S)
+    dp = [[float('inf')]*len(S[i]) for i in range(n)]
+    pre = [[-1]*len(S[i]) for i in range(n)]
 
-    for j in range(len(transformed_S[0])):
+    for j in range(len(S[0])):
         dp[0][j] = 1
 
     for i in range(1, n):
-        for j in range(len(transformed_S[i])):
-            for k in range(len(transformed_S[i-1])):
-                if transformed_S[i][j] not in transformed_S[i-1][:k+1]:
+        for j in range(len(S[i])):
+            for k in range(len(S[i-1])):
+                if S[i][j] not in S[i-1][:k+1]:
                     if dp[i-1][k]+1 < dp[i][j]:
                         dp[i][j] = dp[i-1][k]+1
                         pre[i][j] = k
@@ -211,22 +189,85 @@ def get_migration_path():
     # Construct one of the possible distinct subsequences
     sequence = []
     min_idx = dp[n-1].index(min_distinct_len)
-    sequence.append(transformed_S[n-1][min_idx])
+    sequence.append(S[n-1][min_idx])
     idx = min_idx
     for i in range(n-2, -1, -1):
         idx = pre[i+1][idx]
-        sequence.append(transformed_S[i][idx])
+        sequence.append(S[i][idx])
 
     sequence = sequence[::-1]
     return sequence
+
+def calculate_migration_times(sequence):
+    cnt = 0
+    current = sequence[0]
+    for i in sequence:
+        if i != current:
+            cnt += 1
+            current = i
+    return cnt
+
+#  计算时延
+def get_delay(sequence):
+    start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
+    end_time = start_time + timedelta(seconds=3600)
+
+    # Load the satellites from the TLE data file
+    satellites = parse_tle(file_path)
+
+    # Calculate the closest satellite at each time step
+    speed_of_light = 299.792458  # in km/ms
+    times = ts.linspace(start_time, end_time, 3600)
+
+    previous_closest_satellite = None
+
+    delays = []
+
+    # idx for service satellite
+    service_satellite_idx = -1
+
+    hops = 0
+
+    for time in times:
+        print(time.utc_datetime())
+        min_distance = float('inf')
+
+        current_closest_satellite = None
+
+        for satellite in satellites.values():
+            distance = get_distance(satellite, ground_station, time)
+            if distance < min_distance:
+                min_distance = distance
+                current_closest_satellite = satellite
+        if current_closest_satellite != previous_closest_satellite:
+            service_satellite_idx += 1
+            hops = get_hops(satellites, current_closest_satellite.name, sequence[service_satellite_idx], time)
+
+        previous_closest_satellite = current_closest_satellite
+        delay = min_distance * 2 / speed_of_light
+        print("service_satellite_idx = ", service_satellite_idx)
+        # 从 S[service_satellite_idx] 随机选一个元素
+        print("hops = ", hops)
+        mid_delay = hops * hop_latency
+        delays.append(delay + mid_delay)
+
+    propose_delay_file_path = 'propose_delay_2hop.npy'
+    np.save(propose_delay_file_path, delays)
 
 
 if __name__ == '__main__':
     # get_S()
     sequence = get_migration_path()
-
     print(sequence)
     print(len(sequence))
+    print(calculate_migration_times(sequence))
+    # # # 迁移次数： 17
+    get_delay(sequence)
+
+
+
+
+
 
 
 

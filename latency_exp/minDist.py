@@ -58,7 +58,7 @@ for time in times:
         if distance < min_distance:
             min_distance = distance
             current_closest_satellite = satellite
-    if current_closest_satellite != previous_closest_satellite and previous_closest_satellite is not None:
+    if current_closest_satellite != previous_closest_satellite:
         migrate_times += 1  # Increment the migration count
 
     previous_closest_satellite = current_closest_satellite
@@ -69,6 +69,6 @@ np.save(closest_distances_file_path, closest_distances)
 
 print('迁移次数：',migrate_times)
 
-#迁移次数： 27
+#迁移次数： 28
 
 
