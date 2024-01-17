@@ -45,8 +45,8 @@ def is_satellite_visible(observer: Topos, satellite: EarthSatellite, time: datet
 
     alt, az, distance = topocentric.altaz()
 
-    # 如果高度角（Altitude）大于0，则卫星在地平线以上，因此是可见的
-    return alt.degrees > 0
+    # 如果高度角（Altitude）大于45°，则可见
+    return alt.degrees > 45
 
 # 用于获取卫星与地面某坐标之间的距离
 def get_distance(satellite: EarthSatellite, ground_station, time):
