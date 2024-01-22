@@ -61,7 +61,7 @@ satellite_groups = {}
 # }
 
 # grouped by orbit
-def group_orbit_satellites(tle_path, num_groups=16, group_size=30):
+def group_orbit_satellites(tle_path, num_groups=30, group_size=16):
     """
     Function to group satellites from a TLE file into specified number of groups.
 
@@ -87,7 +87,7 @@ def group_orbit_satellites(tle_path, num_groups=16, group_size=30):
     return satellite_groups
 
 # Call the function and get the groups
-tle_file_path = 'guowang_tle.txt'
+tle_file_path = 'guowang_tle_suit.txt'
 satellite_groups = group_orbit_satellites(tle_file_path)
 
 # Displaying a portion of the result for verification

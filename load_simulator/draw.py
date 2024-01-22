@@ -11,16 +11,16 @@ plt.rcParams.update({'font.size': 14})
 
 # 文件路径列表
 file_paths = [
-    'satellite_orbit_group_load_12H_suit.csv',
-    # 'guowang_random_group_50_experiments_avg_load.csv',
-    'guowang_dynamic_group_16_experiments_avg_load.csv'
+    # 'satellite_orbit_group_load_12H_suit.csv',
+    'random_group_20_experiments_avg_load_12H.csv',
+    'dynamic_group_20_experiments_avg_load_12H.csv'
 ]
 
 # 标签列表
 labels = [
-    'grouped by orbit',
+    # 'grouped by orbit',
 
-    # 'grouped by random',
+    'grouped by random',
 
     'grouped by dynamic'
 
@@ -51,7 +51,7 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 plt.xticks(rotation=45)
 plt.gcf().autofmt_xdate()
 plt.legend()
-plt.title('卫星分组负载标准差（50组）')
+plt.title('卫星分组负载标准差（20组）')
 
 # 显示图表
 plt.show()
