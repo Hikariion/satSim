@@ -12,8 +12,8 @@ plt.rcParams.update({'font.size': 14})
 # 文件路径列表
 file_paths = [
     # 'satellite_orbit_group_load_12H.csv',
-    'guowang_random_group_30_experiments_avg_load.csv',
-    'satellite_ours_group_30_load_12H.csv'
+    'guowang_random_group_50_experiments_avg_load.csv',
+    'satellite_ours_group_50_load_12H.csv'
 ]
 
 # 标签列表
@@ -22,7 +22,7 @@ labels = [
 
     'grouped by random',
 
-    'grouped by ours'
+    'grouped by LCASC'
 
 ]
 
@@ -37,6 +37,10 @@ for file_path, label in zip(file_paths, labels):
 
     plt.plot(data['Timestamp'], smoothed_data, label=label)  # 绘制折线图
     plt.axhline(y=average, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
+    # if label == 'grouped by LCASC':
+    #     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average - 6))
+    # else:
+    #     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average))
     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average))
 
 # 设置图表元素
@@ -47,7 +51,7 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 plt.xticks(rotation=45)
 plt.gcf().autofmt_xdate()
 plt.legend()
-plt.title('卫星分组负载标准差比较（30组）')
+plt.title('卫星分组负载标准差（50组）')
 
 # 显示图表
 plt.show()

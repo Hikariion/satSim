@@ -20,7 +20,7 @@ def load_tle(file_path):
         satellites.append(satellite)
     return satellites
 
-def randomly_group_satellites(tle_path, num_groups=50):
+def randomly_group_satellites(tle_path, num_groups=40):
     """
     Randomly group satellites from a TLE file into a specified number of groups.
 
@@ -68,7 +68,6 @@ def calculate_subpoints(satellites, start_time, duration_hours=12):
             if group not in group_loads:
                 group_loads[group] = []
                 group_loads[group].append(region_load)
-
         mean_loads = [sum(loads) / len(loads) for loads in group_loads.values() if loads]
         if mean_loads:
             # 计算这些均值的标准差
@@ -123,6 +122,6 @@ tle_file_path = 'guowang_tle.txt'
 
 # Running the experiments and getting averaged results
 averaged_df = main(tle_file_path)
-averaged_df.to_csv('guowang_random_group_50_experiments_avg_load.csv', index=False)
-print("计算完成，平均结果已保存到 'guowang_random_group_50_experiments_avg_load.csv'")
+averaged_df.to_csv('guowang_random_group_40_experiments_avg_load.csv', index=False)
+print("计算完成，平均结果已保存到 'guowang_random_group_40_experiments_avg_load.csv'")
 

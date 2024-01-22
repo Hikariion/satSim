@@ -70,7 +70,7 @@ def ours_group_satellites(grouped_path, num_groups=40, group_size=12):
 
 # Call the function and get the groups
 tle_file_path = 'guowang_tle.txt'
-groupedn_file_path = 'node_cluster_30_assignments_affinity.csv'
+groupedn_file_path = 'node_cluster_40_assignments_affinity.csv'
 satellite_groups = ours_group_satellites(groupedn_file_path)
 # print(satellite_groups)
 
@@ -84,5 +84,5 @@ def main(file_path):
     return df
 # 文件路径
 df = main(tle_file_path)
-df.to_csv('satellite_ours_group_30_load_12H.csv', index=False)
-print("计算完成，结果已保存到 'satellite_ours_group_30_load_12H.csv'")
+df.to_csv('satellite_ours_group_40_load_12H.csv', index=False)
+print("计算完成，结果已保存到 'satellite_ours_group_40_load_12H.csv'")

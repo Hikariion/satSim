@@ -62,7 +62,7 @@ correlation_matrix.columns = range(correlation_matrix.shape[1])
 # Plotting the heatmap with correct labels
 plt.figure(figsize=(20, 15))
 sns.heatmap(correlation_matrix, cmap='coolwarm', xticklabels=50, yticklabels=50)
-plt.title('卫星间累计关联度指数分布图')
+plt.title('卫星间周期关联度指数分布图')
 plt.xlabel('卫星节点编号')
 plt.ylabel('卫星节点编号')
 plt.show()

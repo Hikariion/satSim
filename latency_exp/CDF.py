@@ -54,11 +54,11 @@ plot_cdf('closest_distances.npy', 'Nearest Distance First')
 plot_cdf('longest_visual_distance.npy', 'Longest Visibility First')
 
 # 绘制 propose_delay 的CDP
-plot_cdf('propose_delay.npy', 'Proposed 10ms Constraint')
+plot_cdf('propose_delay.npy', 'LCMPS 10ms Constraint')
 # 绘制 propose_delay 的CDP
-plot_cdf('propose_delay_2hop.npy', 'Proposed 15 ms Constraint')
+plot_cdf('propose_delay_2hop.npy', 'LCMPS 13ms Constraint')
 
-plt.title('卫星计算时延的累积分布函数 (CDF)')
+# plt.title('卫星计算时延的累积分布函数 (CDF)')
 plt.xlabel('时延(ms)')
 plt.ylabel('CDF')
 plt.grid(False)
