@@ -134,7 +134,7 @@ def main(file_path, num_experiments=10):
 
     all_data = []
 
-    satellite_load_data_file_path = 'satellite_permin_load.csv'
+    satellite_load_data_file_path = 'datas/satellite_permin_load.csv'
     satellite_load_data = pd.read_csv(satellite_load_data_file_path)
     satellite_load_data['Timestamp'] = pd.to_datetime(satellite_load_data['Timestamp'])
 

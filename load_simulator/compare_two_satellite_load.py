@@ -11,20 +11,20 @@ plt.rcParams.update({'font.size': 16})
 plt.dpi = 600
 
 # Load the data from the CSV file
-data = pd.read_csv('satellite_permin_load.csv')
+data = pd.read_csv('datas/satellite_permin_load.csv')
 
 # Convert Timestamp to datetime and set as index
 data['Timestamp'] = pd.to_datetime(data['Timestamp'])
 data.set_index('Timestamp', inplace=True)
 
 # Filter data for GUOWANG #1 and #10 on the specified date and time range (0:00 to 12:00)
-gw1_data_interval = data[(data['Satellite'] == 'V GUOWANG #1') &
+gw1_data_interval = data[(data['Satellite'] == 'GW #1') &
                          (data.index.date == pd.to_datetime('2023-01-01').date()) &
                          (data.index.hour >= 0) & (data.index.hour < 12)]
-gw2_data_interval = data[(data['Satellite'] == 'V GUOWANG #2') &
+gw2_data_interval = data[(data['Satellite'] == 'GW #2') &
                          (data.index.date == pd.to_datetime('2023-01-01').date()) &
                          (data.index.hour >= 0) & (data.index.hour < 12)]
-gw13_data_interval = data[(data['Satellite'] == 'V GUOWANG #13') &
+gw13_data_interval = data[(data['Satellite'] == 'GW #13') &
                           (data.index.date == pd.to_datetime('2023-01-01').date()) &
                           (data.index.hour >= 0) & (data.index.hour < 12)]
 
