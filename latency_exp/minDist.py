@@ -38,7 +38,7 @@ start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
 end_time = start_time + timedelta(seconds=3600)
 
 # Load the satellites from the TLE data file
-tle_file_path = 'guowang_tle.txt'
+tle_file_path = 'gw_tle.txt'
 satellites = parse_tle(tle_file_path)
 
 # Calculate the closest satellite at each time step
@@ -64,11 +64,11 @@ for time in times:
     previous_closest_satellite = current_closest_satellite
     closest_distances.append(min_distance)
 
-closest_distances_file_path = 'closest_distances.npy'
+closest_distances_file_path = 'datas/closest_distances.npy'
 np.save(closest_distances_file_path, closest_distances)
 
 print('迁移次数：',migrate_times)
 
-#迁移次数： 28
+#迁移次数： 21
 
 

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from region_load import get_region_load
 import random
+import numpy as np
 
 # 加载时间模块
 ts = load.timescale()
@@ -20,7 +21,7 @@ def load_tle(file_path):
         satellites.append(satellite)
     return satellites
 
-def randomly_group_satellites(tle_path, num_groups=20):
+def randomly_group_satellites(tle_path, num_groups=30):
     """
     Randomly group satellites from a TLE file into a specified number of groups.
 
@@ -71,7 +72,7 @@ def calculate_subpoints(satellites, start_time, duration_hours=12):
         mean_loads = [sum(loads) / len(loads) for loads in group_loads.values() if loads]
         if mean_loads:
             # 计算这些均值的标准差
-            overall_std = pd.Series(mean_loads).std()
+            overall_std = np.std(mean_loads)
             data.append({
                 'Timestamp': current_time.utc_datetime(),
                 'Overall Load STD': overall_std,
@@ -122,6 +123,6 @@ tle_file_path = 'guowang_tle_suit.txt'
 
 # Running the experiments and getting averaged results
 averaged_df = main(tle_file_path)
-averaged_df.to_csv('random_group_20_experiments_avg_load_12H.csv', index=False)
-print("计算完成，平均结果已保存到 'random_group_20_experiments_avg_load_12H.csv'")
+averaged_df.to_csv('datas/random_group_30_experiments_avg_load_12H.csv', index=False)
+print("计算完成，平均结果已保存到 'datas/random_group_30_experiments_avg_load_12H.csv'")
 

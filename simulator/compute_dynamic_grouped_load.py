@@ -20,34 +20,6 @@ def load_tle(file_path):
         satellites.append(satellite)
     return satellites
 
-# def randomly_group_satellites(tle_path, num_groups=40):
-#     """
-#     Randomly group satellites from a TLE file into a specified number of groups.
-#
-#     :param tle_path: Path to the TLE file.
-#     :param num_groups: Number of groups to divide the satellites into.
-#     :return: Dictionary with satellite names as keys and their group as values.
-#     """
-#     with open(tle_path, 'r') as file:
-#         lines = file.readlines()
-#
-#     # Extract satellite names
-#     satellite_names = [line.strip() for line in lines if line.startswith('V')]
-#
-#     # Randomly shuffle the satellite list
-#     random.shuffle(satellite_names)
-#
-#     # Initialize the dictionary to hold the group assignments
-#     satellite_groups = {}
-#     satellites_per_group = len(satellite_names) // num_groups
-#
-#     # Assign satellites to groups
-#     for group_index in range(num_groups):
-#         for satellite_index in range(satellites_per_group):
-#             satellite = satellite_names[group_index * satellites_per_group + satellite_index]
-#             satellite_groups[satellite] = f'Group {group_index + 1}'
-#
-#     return satellite_groups
 
 # 定义函数来计算指定时刻的一小时内每个卫星的平均负载并分组
 def calculate_average_loads(satellite_load_data, start_time, num_groups):
@@ -83,7 +55,7 @@ def calculate_subpoints(satellites, start_time, duration_hours, file_path, satel
         print(current_time.utc_datetime())
 
         # 每小时重新分组
-        if hour_counter % 60 == 0:
+        if hour_counter % 10 == 0:
             print("重新分组")
             satellite_groups = calculate_average_loads(satellite_load_data, current_time.utc_datetime(), group_numbers)
 
@@ -142,7 +114,7 @@ def main(file_path, num_experiments=10):
     # Generate new random groupings for each experiment
 
     # Calculate subpoint loads for the current grouping
-    df = calculate_subpoints(satellites, start_time, 12, file_path, satellite_load_data, 16)
+    df = calculate_subpoints(satellites, start_time, 12, file_path, satellite_load_data, 30)
     all_data.append(df)
 
     # Averaging the results
@@ -155,6 +127,6 @@ tle_file_path = 'guowang_tle.txt'
 
 # Running the experiments and getting averaged results
 averaged_df = main(tle_file_path)
-averaged_df.to_csv('guowang_dynamic_group_16_experiments_avg_load.csv', index=False)
-print("计算完成，平均结果已保存到 'guowang_dynamic_group_16_experiments_avg_load.csv'")
+averaged_df.to_csv('guowang_dynamic_group_30_experiments_avg_load.csv', index=False)
+print("计算完成，平均结果已保存到 'guowang_dynamic_group_30_experiments_avg_load.csv'")
 

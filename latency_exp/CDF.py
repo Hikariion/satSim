@@ -11,7 +11,7 @@ def plot_cdf(file_path, label):
     speed_of_light = 299792.458  # in km/s
 
     # 计算时延
-    if not file_path.startswith('propose_delay'):
+    if not file_path.startswith('datas/propose_delay'):
         delays = np.array(loaded_distances) * 2 / speed_of_light * 1000
     else:
         delays = np.array(loaded_distances)
@@ -48,15 +48,15 @@ def plot_cdf(file_path, label):
 plt.figure(figsize=(10, 6))
 
 # 绘制 closest_distances 的CDF Nearest Distance First
-plot_cdf('closest_distances.npy', 'Nearest Distance First')
+plot_cdf('datas/closest_distances.npy', 'Nearest Distance First')
 
 # 绘制 longest_visual_distance 的CDF Longest Visibility First
-plot_cdf('longest_visual_distance.npy', 'Longest Visibility First')
+plot_cdf('datas/longest_visual_distance.npy', 'Longest Visibility First')
 
+# # 绘制 propose_delay 的CDP
+# plot_cdf('propose_delay.npy', 'LCMPS 10ms Constraint')
 # 绘制 propose_delay 的CDP
-plot_cdf('propose_delay.npy', 'LCMPS 10ms Constraint')
-# 绘制 propose_delay 的CDP
-plot_cdf('propose_delay_2hop.npy', 'LCMPS 13ms Constraint')
+plot_cdf('datas/propose_delay_2hop.npy', 'LCMPS 15ms Constraint')
 
 # plt.title('卫星计算时延的累积分布函数 (CDF)')
 plt.xlabel('时延(ms)')

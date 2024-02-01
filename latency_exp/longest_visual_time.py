@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 import numpy as np
 
 # Load the satellites from the TLE data file
-tle_file_path = 'guowang_tle.txt'
+tle_file_path = 'gw_tle.txt'
 ts = load.timescale()
 start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
 end_time = start_time + timedelta(seconds=3600)
@@ -46,7 +46,7 @@ def is_satellite_visible(observer: Topos, satellite: EarthSatellite, time: datet
     alt, az, distance = topocentric.altaz()
 
     # 如果高度角（Altitude）大于45°，则可见
-    return alt.degrees > 45
+    return alt.degrees > 0
 
 # 用于获取卫星与地面某坐标之间的距离
 def get_distance(satellite: EarthSatellite, ground_station, time):
@@ -127,7 +127,7 @@ def main():
         current_distance = get_distance(current_satellite, ground_station, time)
         distances.append(current_distance)
 
-    distance_file_path = 'longest_visual_distance.npy'
+    distance_file_path = 'datas/longest_visual_distance.npy'
     np.save(distance_file_path, distances)
     print('迁移次数：', migrate_times)
 

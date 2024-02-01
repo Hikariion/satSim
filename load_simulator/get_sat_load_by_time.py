@@ -54,5 +54,5 @@ def main(file_path):
 # 文件路径
 file_path = 'guowang_tle_suit.txt'  # TLE数据文件路径
 df = main(file_path)
-df.to_csv('satellite_permin_load.csv', index=False)
+df.to_csv('datas/satellite_permin_load.csv', index=False)
 print("计算完成，结果已保存到 'satellite_permin_load.csv'")

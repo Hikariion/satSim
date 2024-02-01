@@ -7,7 +7,7 @@ import numpy as np
 import json
 
 # 读取TLE文件
-file_path = 'guowang_tle.txt'  # 替换为您的TLE文件路径
+file_path = 'gw_tle.txt'  # 替换为您的TLE文件路径
 # 加载Skyfield的时间和星历表
 ts = load.timescale()
 # Ground station coordinates (latitude, longitude)
@@ -139,16 +139,16 @@ def get_S():
                 min_distance = distance
                 current_closest_satellite = satellite
         if current_closest_satellite != previous_closest_satellite:
-            S.append(calculate_distances_to_satellite(satellites, current_closest_satellite.name, time, 2))
+            S.append(calculate_distances_to_satellite(satellites, current_closest_satellite.name, time, 1))
 
         previous_closest_satellite = current_closest_satellite
 
     print(len(S))
     # 将 S 持久化
-    with open('S_2hop.json', 'w') as file:
+    with open('datas/S_1hop.json', 'w') as file:
         json.dump(S, file)
     # S 作为 txt 持久化
-    with open('S_2hop.txt', 'w') as file:
+    with open('datas/S_1hop.txt', 'w') as file:
         for s in S:
             file.write(str(s)+'\n')
 
@@ -156,7 +156,7 @@ def get_S():
 # 计算迁移路径
 def get_migration_path():
     # 读 S
-    with open('S_2hop.json', 'r') as file:
+    with open('datas/S_1hop.json', 'r') as file:
         S = json.load(file)
 
 
@@ -249,9 +249,10 @@ def get_delay(sequence):
         # 从 S[service_satellite_idx] 随机选一个元素
         print("hops = ", hops)
         mid_delay = hops * hop_latency
+        print(delay+mid_delay)
         delays.append(delay + mid_delay)
 
-    propose_delay_file_path = 'propose_delay_2hop.npy'
+    propose_delay_file_path = 'datas/propose_delay_1hop.npy'
     np.save(propose_delay_file_path, delays)
 
 
@@ -261,8 +262,9 @@ if __name__ == '__main__':
     print(sequence)
     print(len(sequence))
     print(calculate_migration_times(sequence))
-    # # # 迁移次数： 17
-    get_delay(sequence)
+    # # # # 迁移次数： 2 hop 10
+    #                1 hop
+    # get_delay(sequence)
 
 
 

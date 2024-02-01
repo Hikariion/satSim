@@ -61,7 +61,7 @@ satellite_groups = {}
 # }
 
 # grouped by orbit
-def group_orbit_satellites(tle_path, num_groups=30, group_size=16):
+def group_orbit_satellites(tle_path, num_groups=16, group_size=30):
     """
     Function to group satellites from a TLE file into specified number of groups.
 
@@ -90,15 +90,16 @@ def group_orbit_satellites(tle_path, num_groups=30, group_size=16):
 tle_file_path = 'guowang_tle_suit.txt'
 satellite_groups = group_orbit_satellites(tle_file_path)
 
-# Displaying a portion of the result for verification
-list(satellite_groups.items())[:]  # Displaying first 15 items as an example
+# # Displaying a portion of the result for verification
+# list(satellite_groups.items())[:]  # Displaying first 15 items as an example
 
 def main(file_path):
     satellites = load_tle(tle_file_path)
+    satellite_groups = group_orbit_satellites(tle_file_path)
     start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
     df = calculate_subpoints(satellites, start_time)
     return df
 # 文件路径
 df = main(tle_file_path)
-df.to_csv('satellite_orbit_group_load_12H_suit.csv', index=False)
-print("计算完成，结果已保存到 'satellite_orbit_group_load_12H_suit.csv'")
+df.to_csv('datas/satellite_orbit_group_load_12H_suit.csv', index=False)
+print("计算完成，结果已保存到 'datas/satellite_orbit_group_load_12H_suit.csv'")

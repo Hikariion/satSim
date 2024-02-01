@@ -11,16 +11,16 @@ plt.rcParams.update({'font.size': 14})
 
 # 文件路径列表
 file_paths = [
-    'satellite_orbit_group_load_12H_suit.csv',
-    # 'guowang_random_group_50_experiments_avg_load.csv',
-    'guowang_dynamic_group_16_experiments_avg_load.csv'
+    # 'satellite_orbit_group_load_12H_suit.csv',
+    'guowang_random_group_45_experiments_avg_load.csv',
+    'guowang_dynamic_group_45_experiments_avg_load.csv'
 ]
 
 # 标签列表
 labels = [
-    'grouped by orbit',
+    # 'grouped by orbit',
 
-    # 'grouped by random',
+    'grouped by random',
 
     'grouped by dynamic'
 
