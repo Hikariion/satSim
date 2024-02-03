@@ -26,49 +26,60 @@ def get_distance(satellite: EarthSatellite, ground_station, time):
     distance = np.linalg.norm(diff)
     return distance
 
-# Ground station coordinates (latitude, longitude)
-ground_station_coords = (39.9, 116.3)  # Beijing, China
+if __name__ == '__main__':
+    tle_file_path = 'gw_tle.txt'
+    ts = load.timescale()
+    satellites = parse_tle(tle_file_path)
+    start_time = ts.utc(2023, 1, 1, 0, 0, 0)
+    end_time = start_time + timedelta(seconds=3600)
 
-# Initialize the ground station position
-ground_station = Topos(latitude_degrees=ground_station_coords[0], longitude_degrees=ground_station_coords[1])
+    total_migrate_times_lists = []
+    total_closest_distances_lists = []
 
-# Load timescale and initialize a time period for calculations
-ts = load.timescale()
-start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
-end_time = start_time + timedelta(seconds=3600)
+    coords = np.load('random_coords.npy')
 
-# Load the satellites from the TLE data file
-tle_file_path = 'gw_tle.txt'
-satellites = parse_tle(tle_file_path)
+    exp_round = 0
 
-# Calculate the closest satellite at each time step
-speed_of_light = 299792.458  # in km/s
-times = ts.linspace(start_time, end_time, 3600)
+    for lat, lon in coords:
+        exp_round += 1
+        print(f'exp times {exp_round}')
 
-previous_closest_satellite = None
-migrate_times  = 0
+        ground_station = Topos(latitude_degrees=lat, longitude_degrees=lon)
 
-closest_distances = []
-for time in times:
-    print(time.utc_datetime())
-    min_distance = float('inf')
-    current_closest_satellite = None
-    for satellite in satellites.values():
-        distance = get_distance(satellite, ground_station, time)
-        if distance < min_distance:
-            min_distance = distance
-            current_closest_satellite = satellite
-    if current_closest_satellite != previous_closest_satellite:
-        migrate_times += 1  # Increment the migration count
+        start_time = ts.utc(2023, 1, 1, 0, 0, 0)
+        end_time = start_time + timedelta(seconds=3600)
+        times = ts.linspace(start_time, end_time, 3600)
 
-    previous_closest_satellite = current_closest_satellite
-    closest_distances.append(min_distance)
+        migrate_times = 0
+        closest_distances = []
 
-closest_distances_file_path = 'datas/closest_distances.npy'
-np.save(closest_distances_file_path, closest_distances)
+        previous_closest_satellite = None
 
-print('迁移次数：',migrate_times)
+        for time in times:
+            print(time.utc_datetime())
+            min_distance = float('inf')
+            current_closest_satellite = None
+            for satellite in satellites.values():
+                distance = get_distance(satellite, ground_station, time)
+                if distance < min_distance:
+                    min_distance = distance
+                    current_closest_satellite = satellite
+            if current_closest_satellite != previous_closest_satellite:
+                migrate_times += 1  # Increment the migration count
 
-#迁移次数： 21
+            previous_closest_satellite = current_closest_satellite
+            closest_distances.append(min_distance)
+
+        total_migrate_times_lists.append(migrate_times)
+        total_closest_distances_lists.append(closest_distances)
+
+    average_distance = np.mean(total_closest_distances_lists, axis=0)
+    average_migrate_times = np.mean(total_migrate_times_lists, axis=0)
+
+    # 保存迁移次数列表和平均距离到文件
+    print(total_migrate_times_lists)
+    print(average_migrate_times)
+    np.save('datas/minDist_migrate_times_list_avg.npy', average_migrate_times)
+    np.save('datas/minDist_average_distance.npy', average_distance)
 
 

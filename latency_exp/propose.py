@@ -10,11 +10,9 @@ import json
 file_path = 'gw_tle.txt'  # 替换为您的TLE文件路径
 # 加载Skyfield的时间和星历表
 ts = load.timescale()
-# Ground station coordinates (latitude, longitude)
-ground_station_coords = (39.9, 116.3)  # Beijing, China
 
 # Initialize the ground station position
-ground_station = Topos(latitude_degrees=ground_station_coords[0], longitude_degrees=ground_station_coords[1])
+ground_station = Topos(latitude_degrees=0, longitude_degrees=0)
 
 # 每跳的链路时延
 hop_latency = 3  # 单位：ms
@@ -83,7 +81,7 @@ def get_hops(satellites, source_satellite_name, target_satellite_name, time):
 
 
 # 找出最近 n 跳的卫星集合
-def calculate_distances_to_satellite(satellites, target_satellite_name, time, n=1):
+def calculate_distances_to_satellite(satellites, target_satellite_name, time, n):
     target_satellite = satellites.get(target_satellite_name)
     if not target_satellite:
         return "Target satellite not found"
@@ -115,7 +113,7 @@ def calculate_distances_to_satellite(satellites, target_satellite_name, time, n=
     return list(current_satellites)
 
 # 获得预计时间内的满足时延约束的集合
-def get_S():
+def get_S(exp_num, hops):
     start_time = ts.utc(2023, 1, 1, 0, 0, 0)  # 2023年0点0分0秒开始
     end_time = start_time + timedelta(seconds=3600)
 
@@ -139,26 +137,25 @@ def get_S():
                 min_distance = distance
                 current_closest_satellite = satellite
         if current_closest_satellite != previous_closest_satellite:
-            S.append(calculate_distances_to_satellite(satellites, current_closest_satellite.name, time, 1))
+            S.append(calculate_distances_to_satellite(satellites, current_closest_satellite.name, time, hops))
 
         previous_closest_satellite = current_closest_satellite
 
     print(len(S))
     # 将 S 持久化
-    with open('datas/S_1hop.json', 'w') as file:
+    with open(f'datas/{exp_num}/S_{hops}hop.json', 'w') as file:
         json.dump(S, file)
     # S 作为 txt 持久化
-    with open('datas/S_1hop.txt', 'w') as file:
+    with open(f'datas/{exp_num}/S_{hops}hop.txt', 'w') as file:
         for s in S:
             file.write(str(s)+'\n')
 
 
 # 计算迁移路径
-def get_migration_path():
+def get_migration_path(exp_num, hops):
     # 读 S
-    with open('datas/S_1hop.json', 'r') as file:
+    with open(f'datas/{exp_num}/S_{hops}hop.json', 'r') as file:
         S = json.load(file)
-
 
     # dp
     for s in S:
@@ -252,19 +249,38 @@ def get_delay(sequence):
         print(delay+mid_delay)
         delays.append(delay + mid_delay)
 
-    propose_delay_file_path = 'datas/propose_delay_1hop.npy'
-    np.save(propose_delay_file_path, delays)
+    return delays
 
 
 if __name__ == '__main__':
-    # get_S()
-    sequence = get_migration_path()
-    print(sequence)
-    print(len(sequence))
-    print(calculate_migration_times(sequence))
-    # # # # 迁移次数： 2 hop 10
-    #                1 hop
-    # get_delay(sequence)
+
+    hops = 2
+
+    coords = np.load('random_coords.npy')
+
+    exp_round = 0
+
+    delay_times = []
+    migrate_times = []
+
+    for lat, lon in coords:
+        exp_round += 1
+        print(exp_round)
+        ground_station = Topos(latitude_degrees=lat, longitude_degrees=lon)
+        get_S(exp_round, hops)
+        sequence = get_migration_path(exp_round, hops)
+        times = calculate_migration_times(sequence)
+        delays = get_delay(sequence)
+
+        migrate_times.append(times)
+        delay_times.append(delays)
+
+
+    average_delay_times = np.mean(delay_times, axis=0)
+    average_migrate_times = np.mean(migrate_times, axis=0)
+
+    np.save(f'datas/propose_average_migrate_times_{hops}hop_3ms.npy', average_migrate_times)
+    np.save(f'datas/propose_average_delay_times_{hops}hop_3ms.npy', average_delay_times)
 
 
 

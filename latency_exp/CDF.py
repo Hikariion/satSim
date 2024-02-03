@@ -11,7 +11,7 @@ def plot_cdf(file_path, label):
     speed_of_light = 299792.458  # in km/s
 
     # 计算时延
-    if not file_path.startswith('datas/propose_delay'):
+    if not file_path.startswith('datas/propose'):
         delays = np.array(loaded_distances) * 2 / speed_of_light * 1000
     else:
         delays = np.array(loaded_distances)
@@ -26,8 +26,8 @@ def plot_cdf(file_path, label):
     # # p50分位点
     idx_50 = np.searchsorted(cdf, 0.5)
     plt.axvline(sorted_delays[idx_50], color=line_color, linestyle='--', ymax=cdf[idx_50])
-    if file_path == 'propose_delay_2hop.npy':
-        plt.annotate('50%:{:.2f}'.format(sorted_delays[idx_50]), xy=(sorted_delays[idx_50], cdf[idx_50]), xytext=(sorted_delays[idx_50]-0.8, cdf[idx_50]+0.03))
+    if file_path == 'datas/propose_average_delay_times_2hop_3ms.npy':
+        plt.annotate('50%:{:.2f}'.format(sorted_delays[idx_50]), xy=(sorted_delays[idx_50], cdf[idx_50]), xytext=(sorted_delays[idx_50]-1, cdf[idx_50]+0.01))
     else:
         plt.annotate('50%:{:.2f}'.format(sorted_delays[idx_50]), xy=(sorted_delays[idx_50], cdf[idx_50]),xytext=(sorted_delays[idx_50] + 0.05, cdf[idx_50] - 0.03))
     plt.plot([sorted_delays[idx_50]], [cdf[idx_50]], 'o', color=line_color)
@@ -39,7 +39,11 @@ def plot_cdf(file_path, label):
     # p99分位点
     idx_99 = np.searchsorted(cdf, 0.99)
     plt.axvline(sorted_delays[idx_99], color=line_color, linestyle=':', ymax=cdf[idx_99] - 0.03)
-    plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]), xytext=(sorted_delays[idx_99]-0.03, cdf[idx_99]-0.03))
+    if file_path == 'datas/longest_visual_average_distance.npy':
+        plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]), xytext=(sorted_delays[idx_99]-0.3, cdf[idx_99]-0.05))
+    else:
+        plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]),
+                     xytext=(sorted_delays[idx_99] - 0.03, cdf[idx_99] - 0.03))
     plt.plot([sorted_delays[idx_99]], [cdf[idx_99]], 'o', color=line_color)
 
 
@@ -48,15 +52,15 @@ def plot_cdf(file_path, label):
 plt.figure(figsize=(10, 6))
 
 # 绘制 closest_distances 的CDF Nearest Distance First
-plot_cdf('datas/closest_distances.npy', 'Nearest Distance First')
+plot_cdf('datas/minDist_average_distance.npy', '最短距离迁移策略')
 
 # 绘制 longest_visual_distance 的CDF Longest Visibility First
-plot_cdf('datas/longest_visual_distance.npy', 'Longest Visibility First')
+plot_cdf('datas/longest_visual_average_distance.npy', '最长可见时间迁移策略')
 
 # # 绘制 propose_delay 的CDP
 # plot_cdf('propose_delay.npy', 'LCMPS 10ms Constraint')
 # 绘制 propose_delay 的CDP
-plot_cdf('datas/propose_delay_2hop.npy', 'LCMPS 15ms Constraint')
+plot_cdf('datas/propose_average_delay_times_2hop_3ms.npy', '基于时延约束的迁移策略')
 
 # plt.title('卫星计算时延的累积分布函数 (CDF)')
 plt.xlabel('时延(ms)')

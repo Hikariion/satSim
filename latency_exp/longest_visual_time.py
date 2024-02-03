@@ -80,57 +80,62 @@ def test():
         print(visible_satellite.name)
         print(remaining_visibility_time(ground_station, visible_satellite, start_time.utc_datetime()))
 
-def main():
+if __name__ == '__main__':
     satellites = parse_tle(tle_file_path)
-    # Ground station coordinates (latitude, longitude)
-    ground_station_coords = (39.9, 116.3)  # Beijing, China
+    migrate_times_list = []
+    total_distances = []
+    exp_times = 10
 
-    # Initialize the ground station position
-    ground_station = Topos(latitude_degrees=ground_station_coords[0], longitude_degrees=ground_station_coords[1])
+    coords = np.load('random_coords.npy')
 
-    current_satellite = None
-    migrate_times = 0
+    exp_round = 0
 
-    times = ts.linspace(start_time, end_time, 3600)
+    for lat, lon in coords:
+        exp_round += 1
+        print(f'exp times {exp_round}')
 
-    switch_time = start_time
+        ground_station = Topos(latitude_degrees=lat, longitude_degrees=lon)
 
-    distances = []
+        start_time = ts.utc(2023, 1, 1, 0, 0, 0)
+        end_time = start_time + timedelta(seconds=3600)
+        times = ts.linspace(start_time, end_time, 3600)
 
-    for time in times:
-        print(time.utc_datetime())
+        migrate_times = 0
+        distances = []
 
-        if time.utc_datetime().time() >= switch_time.utc_datetime().time():
-            # 迁移次数递增
-            migrate_times += 1
+        current_satellite = None
+        switch_time = start_time
 
-            # 找到当前的可见卫星列表
-            visible_satellites = []
-            for satellite in satellites.values():
-                if (is_satellite_visible(ground_station, satellite, time.utc_datetime())):
-                    visible_satellites.append(satellite)
-            # 获得可见时间最长的卫星
-            longest_visible_time = 0
-            longest_visible_satellite = None
+        for time in times:
+            print(time.utc_datetime().time())
+            if time.utc_datetime().time() >= switch_time.utc_datetime().time():
+                migrate_times += 1
 
-            for visible_satellite in visible_satellites:
-                visible_time = remaining_visibility_time(ground_station, visible_satellite, time.utc_datetime())
-                if visible_time > longest_visible_time:
-                    longest_visible_time = visible_time
-                    longest_visible_satellite = visible_satellite
+                visible_satellites = [satellite for satellite in satellites.values() if is_satellite_visible(ground_station, satellite, time.utc_datetime())]
 
-            # 重置切换时间
-            switch_time = time + timedelta(seconds=longest_visible_time)
-            # 重置当前卫星
-            current_satellite = longest_visible_satellite
-        # 计算当前卫星的距离
-        current_distance = get_distance(current_satellite, ground_station, time)
-        distances.append(current_distance)
+                longest_visible_time = 0
+                longest_visible_satellite = None
 
-    distance_file_path = 'datas/longest_visual_distance.npy'
-    np.save(distance_file_path, distances)
-    print('迁移次数：', migrate_times)
+                for visible_satellite in visible_satellites:
+                    visible_time = remaining_visibility_time(ground_station, visible_satellite, time.utc_datetime())
+                    if visible_time > longest_visible_time:
+                        longest_visible_time = visible_time
+                        longest_visible_satellite = visible_satellite
 
-main()
+                switch_time = time + timedelta(seconds=longest_visible_time)
+                current_satellite = longest_visible_satellite
 
-#迁移次数： 6
+            if current_satellite is not None:
+                current_distance = get_distance(current_satellite, ground_station, time)
+                distances.append(current_distance)
+
+        migrate_times_list.append(migrate_times)
+        total_distances.append(distances)
+
+    average_distance = np.mean(total_distances, axis=0)
+    average_times = np.mean(migrate_times_list, axis=0)
+
+    # 保存迁移次数列表和平均距离到文件
+    np.save('datas/longest_visual_migrate_times_list_avg.npy', average_times)
+    np.save('datas/longest_visual_average_distance.npy', average_distance)
+
