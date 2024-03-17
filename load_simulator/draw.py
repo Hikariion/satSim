@@ -2,30 +2,33 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
 from datetime import datetime, timedelta
 
 # 设置字体和图表属性
+mpl.rcParams['figure.dpi'] = 200
 plt.rcParams["font.sans-serif"]=['simsun']  # 设置字体
 plt.rcParams["axes.unicode_minus"]=False  # 解决负号乱码问题
-plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'font.size': 8})
 
 # 文件路径列表
 file_paths = [
     # 'datas/satellite_orbit_group_load_12H_suit.csv',
-    'datas/random_group_40_experiments_avg_load_12H.csv',
-    'datas/dynamic_group_40_experiments_avg_load_12H.csv',
-    # 'datas/dynamic_genetics_30_experiments_avg_load_12H.csv'
+    'datas/random_group_50_experiments_avg_load_12H.csv',
+    'datas/dynamic_group_50_experiments_avg_load_12H.csv',
+    'datas/dynamic_genetics_50_experiments_avg_load_12H.csv'
 
 ]
 
 # 标签列表
 labels = [
+    # 'orbit',
+
     'random',
 
     'greedy',
 
-    # 'genetics'
-
+    'proposed'
 ]
 
 # 读取并绘制每个文件的数据
@@ -38,7 +41,7 @@ for file_path, label in zip(file_paths, labels):
 
     plt.plot(data['Timestamp'], smoothed_data, label=label)  # 绘制折线图
     plt.axhline(y=average, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
-    # plt.axhline(y=peak, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
+    plt.axhline(y=peak, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
     # if label == 'grouped by LCASC':
     #     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average - 6))
     # else:
@@ -46,7 +49,7 @@ for file_path, label in zip(file_paths, labels):
     # 平均
     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average))
     # 峰值
-    # plt.annotate('{:.4f}'.format(peak), xy=(data['Timestamp'][10], peak), xytext=(data['Timestamp'][10], peak))
+    plt.annotate('{:.4f}'.format(peak), xy=(data['Timestamp'][10], peak), xytext=(data['Timestamp'][10], peak))
     # if 'dynamic' in file_path:
     #     # 画一条竖线
     #     start_time = data['Timestamp'].min().replace(hour=1, minute=0, second=0, microsecond=0)
@@ -62,7 +65,7 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 plt.xticks(rotation=45)
 plt.gcf().autofmt_xdate()
 plt.legend()
-plt.title('划分为50组')
+# plt.title('50组')
 
 # 显示图表
 plt.show()

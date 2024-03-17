@@ -8,7 +8,7 @@ import argparse
 
 # 遗传算法参数
 num_individuals = 100  # 种群大小
-num_generations = 100  # 代数
+num_generations = 10  # 代数
 mutation_rate = 0.05   # 变异率
 num_groups = 0        # 分组总数
 
@@ -129,7 +129,7 @@ def genetic_algorithm(average_loads):
 # 定义函数来计算指定时刻的一小时内每个卫星的平均负载并分组
 def calculate_genetics_loads(satellite_load_data, start_time):
     # 确定结束时间
-    end_time = start_time + timedelta(minutes=10)
+    end_time = start_time + timedelta(minutes=60)
 
     # 筛选出在指定时间范围内的数据
     filtered_data = satellite_load_data[(satellite_load_data['Timestamp'] >= start_time) &
@@ -183,7 +183,7 @@ def calculate_subpoints(satellites, start_time, duration_hours, satellite_load_d
         print(current_time.utc_datetime())
 
         # 每小时重新分组
-        if hour_counter % 10 == 0:
+        if hour_counter % 60 == 0:
             print("重新分组")
             satellite_groups = calculate_genetics_loads(satellite_load_data, current_time.utc_datetime())
 
@@ -251,7 +251,7 @@ if __name__ == '__main__':
 
     df = calculate_subpoints(satellites, start_time, 12, satellite_load_data)
 
-    output_filename = f'datas/dynamic_genetics_{num_groups}_experiments_avg_load_12H.csv'
+    output_filename = f'datas/dynamic_genetics_{num_groups}_experiments_avg_load_12H_60min.csv'
     df.to_csv(output_filename, index=False)
     print(f'计算完成，平均结果已保存到 {output_filename}')
 

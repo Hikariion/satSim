@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 # 设置字体和图表属性
+mpl.rcParams['figure.dpi'] = 200
 plt.rcParams["font.sans-serif"] = ['simsun']  # 设置字体
 plt.rcParams["axes.unicode_minus"] = False  # 解决负号乱码问题
-plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'font.size': 8})
 
 def plot_cdf(file_path, label):
     loaded_distances = np.load(file_path)
@@ -60,7 +62,8 @@ plot_cdf('datas/longest_visual_average_distance.npy', '最长可见时间迁移�
 # # 绘制 propose_delay 的CDP
 # plot_cdf('propose_delay.npy', 'LCMPS 10ms Constraint')
 # 绘制 propose_delay 的CDP
-plot_cdf('datas/propose_average_delay_times_2hop_3ms.npy', '基于时延约束的迁移策略')
+plot_cdf('datas/propose_average_delay_times_1hop_3ms.npy', '基于时延约束的迁移策略-1hop')
+plot_cdf('datas/propose_average_delay_times_2hop_5ms.npy', '基于时延约束的迁移策略-2hop')
 
 # plt.title('卫星计算时延的累积分布函数 (CDF)')
 plt.xlabel('时延(ms)')

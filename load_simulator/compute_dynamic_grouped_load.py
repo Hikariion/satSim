@@ -2,7 +2,6 @@ from skyfield.api import load, EarthSatellite
 from datetime import datetime, timedelta
 import pandas as pd
 from region_load import get_region_load
-import random
 
 # 加载时间模块
 ts = load.timescale()
@@ -21,26 +20,39 @@ def load_tle(file_path):
     return satellites
 
 
-# 定义函数来计算指定时刻的10分钟内每个卫星的平均负载并分组
 def dynamic_groups(satellite_load_data, start_time, num_groups):
     # 确定结束时间
     end_time = start_time + timedelta(minutes=10)
 
     # 筛选出在指定时间范围内的数据
     filtered_data = satellite_load_data[(satellite_load_data['Timestamp'] >= start_time) &
-                         (satellite_load_data['Timestamp'] < end_time)]
+                                        (satellite_load_data['Timestamp'] < end_time)]
 
     # 计算每个卫星的平均负载
     average_loads = filtered_data.groupby('Satellite')['Load'].mean()
 
-    # 将卫星根据平均负载排序并分组
+    # 将卫星根据平均负载排序
     sorted_satellites = average_loads.sort_values().index.tolist()
+
+    # 计算每组应有的卫星数量，包括处理不能整除的情况
     satellites_per_group = len(sorted_satellites) // num_groups
+    extra_satellites = len(sorted_satellites) % num_groups
+
     satellite_groups = {}
+    start_index = 0
     for i in range(num_groups):
-        group_satellites = sorted_satellites[i * satellites_per_group: (i + 1) * satellites_per_group]
+        # 为每个组分配卫星，如果有额外的卫星，则前几组多分配一个
+        if extra_satellites > 0:
+            end_index = start_index + satellites_per_group + 1
+            extra_satellites -= 1
+        else:
+            end_index = start_index + satellites_per_group
+
+        group_satellites = sorted_satellites[start_index:end_index]
         for satellite in group_satellites:
             satellite_groups[satellite] = f'Group {i + 1}'
+
+        start_index = end_index
 
     return satellite_groups
 
@@ -111,7 +123,7 @@ def main(file_path, num_experiments=1):
     # Generate new random groupings for each experiment
 
     # Calculate subpoint loads for the current grouping
-    df = calculate_subpoints(satellites, start_time, 12, satellite_load_data, 35)
+    df = calculate_subpoints(satellites, start_time, 12, satellite_load_data, 16)
     all_data.append(df)
 
     # Averaging the results
@@ -124,6 +136,6 @@ tle_file_path = 'guowang_tle_suit.txt'
 
 # Running the experiments and getting averaged results
 averaged_df = main(tle_file_path)
-averaged_df.to_csv('datas/dynamic_group_35_experiments_avg_load_12H.csv', index=False)
-print("计算完成，平均结果已保存到 'datas/dynamic_group_35_experiments_avg_load_12H.csv'")
+averaged_df.to_csv('datas/dynamic_group_16_experiments_avg_load_12H.csv', index=False)
+print("计算完成，平均结果已保存到 'datas/dynamic_group_16_experiments_avg_load_12H.csv'")
 

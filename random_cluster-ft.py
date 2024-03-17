@@ -6,7 +6,7 @@ num_satellites = 480
 num_clusters = 30
 
 # 创建卫星名字列表
-satellites = [f"Satellite #{i+1}" for i in range(num_satellites)]
+satellites = [f"Guowang #{i+1}" for i in range(num_satellites)]
 
 # 随机分配卫星到不同的群集
 random.shuffle(satellites)

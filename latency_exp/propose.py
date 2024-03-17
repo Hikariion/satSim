@@ -15,7 +15,7 @@ ts = load.timescale()
 ground_station = Topos(latitude_degrees=0, longitude_degrees=0)
 
 # 每跳的链路时延
-hop_latency = 3  # 单位：ms
+hop_latency = 5  # 单位：ms
 
 # 解析TLE文件并创建卫星字典
 def parse_tle(file_path):
@@ -254,7 +254,7 @@ def get_delay(sequence):
 
 if __name__ == '__main__':
 
-    hops = 2
+    hops = 1
 
     coords = np.load('random_coords.npy')
 
@@ -279,8 +279,8 @@ if __name__ == '__main__':
     average_delay_times = np.mean(delay_times, axis=0)
     average_migrate_times = np.mean(migrate_times, axis=0)
 
-    np.save(f'datas/propose_average_migrate_times_{hops}hop_3ms.npy', average_migrate_times)
-    np.save(f'datas/propose_average_delay_times_{hops}hop_3ms.npy', average_delay_times)
+    np.save(f'datas/propose_average_migrate_times_{hops}hop_5ms.npy', average_migrate_times)
+    np.save(f'datas/propose_average_delay_times_{hops}hop_5ms.npy', average_delay_times)
 
 
 
