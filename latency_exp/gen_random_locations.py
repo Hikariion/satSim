@@ -9,6 +9,9 @@ def generate_and_save_coords(file_path):
         longitude = random.uniform(-180, 180)
         coords.append((latitude, longitude))
 
+    coords.append((38.9, 115.3))  # 北京坐标
+
+    coords.append((39.9, 116.3))  # 北京坐标
     np.save(file_path, np.array(coords))
 
 

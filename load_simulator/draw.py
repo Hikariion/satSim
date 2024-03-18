@@ -33,7 +33,7 @@ labels = [
     'Greedy',
 
     'SLFDG',
-    
+
 
 ]
 
@@ -53,7 +53,7 @@ for file_path, label in zip(file_paths, labels):
     # else:
     #     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average))
     # 平均
-    if label == 'greedy':
+    if label == 'Greedy':
         plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average - 6))
     else:
         plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average))
