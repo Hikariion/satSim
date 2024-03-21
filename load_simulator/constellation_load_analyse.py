@@ -19,8 +19,8 @@ df_filtered['Satellite_ID'] = df_filtered['Satellite'].str.extract('(\d+)').asty
 plt.figure(figsize=(12, 7))
 # Plot using the numerical ID instead of the full satellite name
 plt.scatter(df_filtered['Satellite_ID'], df_filtered['Load'], marker='x', color='blue')
-plt.xlabel('卫星编号')
-plt.ylabel('负载指数（L）')
+plt.xlabel('卫星编号', fontsize=18)
+plt.ylabel('负载指数（L）', fontsize=18)
 
 # Adjust x-axis to potentially display every 50th ID, based on the range of your data
 max_id = df_filtered['Satellite_ID'].max()

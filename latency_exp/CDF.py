@@ -42,7 +42,7 @@ def plot_cdf(file_path, label):
     idx_99 = np.searchsorted(cdf, 0.99)
     plt.axvline(sorted_delays[idx_99], color=line_color, linestyle=':', ymax=cdf[idx_99] - 0.03)
     if file_path == 'datas/longest_visual_average_distance.npy':
-        plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]), xytext=(sorted_delays[idx_99]-0.5, cdf[idx_99]-0.05))
+        plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]), xytext=(sorted_delays[idx_99]-0.5, cdf[idx_99]-0.07))
     else:
         plt.annotate('99%:{:.2f}'.format(sorted_delays[idx_99]), xy=(sorted_delays[idx_99], cdf[idx_99]),
                      xytext=(sorted_delays[idx_99] - 0.03, cdf[idx_99] - 0.03))
@@ -66,7 +66,7 @@ plot_cdf('datas/propose_average_delay_times_1hop_4ms.npy', '基于时延约束�
 plot_cdf('datas/propose_average_delay_times_2hop_4ms.npy', '基于时延约束的迁移策略-2hop')
 
 # plt.title('卫星计算时延的累积分布函数 (CDF)')
-plt.xlabel('时延(ms)')
+plt.xlabel('时延(ms)', fontsize=9)
 plt.ylabel('CDF')
 plt.grid(False)
 plt.legend()
