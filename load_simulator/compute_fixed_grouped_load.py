@@ -29,6 +29,26 @@ def split_array_into_vertical_3x8_blocks(array):
         blocks.append(block)
     return blocks
 
+# 25
+def split_array_into_6x3_blocks(array):
+    blocks = []
+    for col_start in range(0, array.shape[1], 6):
+        block = array[:3, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+            block = array[3:6, col_start:col_start+6]
+            blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+            block = array[6:9, col_start:col_start+6]
+            blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+            block = array[9:12, col_start:col_start+6]
+            blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+            block = array[12:, col_start:col_start+6]
+            blocks.append(block)
+    return blocks
+
 # 30
 def split_array_into_8x2_blocks(array):
     blocks = []
@@ -40,6 +60,32 @@ def split_array_into_8x2_blocks(array):
         blocks.append(block)
     return blocks
 
+# 35
+def split_array_into_6x2_blocks(array):
+    blocks = []
+    for col_start in range(0, array.shape[1], 6):
+        block = array[:2, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+        block = array[2:4, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+        block = array[4:6, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+        block = array[6:8, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+        block = array[8:10, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+        block = array[10:12, col_start:col_start + 6]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 6):
+        block = array[12:, col_start:col_start + 6]
+        blocks.append(block)
+    return blocks
+
 # 40
 def split_array_into_vertical_3x4_blocks(array):
     blocks = []
@@ -47,7 +93,47 @@ def split_array_into_vertical_3x4_blocks(array):
         block = array[:4, col_start:col_start + 3]
         blocks.append(block)
     for col_start in range(0, array.shape[1], 3):
-        block = array[4:, col_start:col_start + 3]
+        block = array[4:8, col_start:col_start + 3]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 3):
+        block = array[8:12, col_start:col_start + 3]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 3):
+        block = array[12:16, col_start:col_start + 3]
+        blocks.append(block)
+    return blocks
+
+# 45
+def split_array_into_2x5_blocks(array):
+    blocks = []
+    for col_start in range(0, array.shape[1], 2):
+        block = array[:5, col_start:col_start + 2]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 2):
+        block = array[5:10, col_start:col_start + 2]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 2):
+        block = array[10:, col_start:col_start + 2]
+        blocks.append(block)
+    return blocks
+
+# 50
+def split_array_into_3x3_blocks(array):
+    blocks = []
+    for col_start in range(0, array.shape[1], 3):
+        block = array[:3, col_start:col_start + 3]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 3):
+        block = array[3:6, col_start:col_start + 3]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 3):
+        block = array[6:9, col_start:col_start + 3]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 3):
+        block = array[9:12, col_start:col_start + 3]
+        blocks.append(block)
+    for col_start in range(0, array.shape[1], 3):
+        block = array[12:, col_start:col_start + 3]
         blocks.append(block)
     return blocks
 
@@ -110,13 +196,13 @@ def fixed_group_satellites(tle_path, blocks):
 if __name__ == '__main__':
     array = np.arange(1, 481).reshape(16, 30, order='F')
     # 再次调用函数来分割数组
-    blocks = split_array_into_vertical_3x4_blocks(array)
+    blocks = split_array_into_3x3_blocks(array)
 
     # 显示第一组以确认
     # first_block_corrected = blocks_2x15[10]
 
     # print(first_block_corrected)
-    # print(len(blocks_2x15))
+    # print(len(blocks))
 
     tle_file_path = 'guowang_tle_suit.txt'
     ts = load.timescale()
@@ -125,9 +211,9 @@ if __name__ == '__main__':
     start_time = ts.utc(2023, 1, 1, 0, 0, 0)
 
     satellite_groups = fixed_group_satellites(tle_file_path, blocks)
-
-    # print(satellite_groups)
-
+    #
+    # # print(satellite_groups)
+    #
     df = calculate_subpoints(satellites, start_time)
-    df.to_csv('datas/fixed_group_40_experiments_avg_load_12H.csv', index=False)
-    print("计算完成，平均结果已保存到 'datas/fixed_group_40_experiments_avg_load_12H.csv'")
+    df.to_csv('datas/fixed_group_50_experiments_avg_load_12H.csv', index=False)
+    print("计算完成，平均结果已保存到 'datas/fixed_group_50_experiments_avg_load_12H.csv'")

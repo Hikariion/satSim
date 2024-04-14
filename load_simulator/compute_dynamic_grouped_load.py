@@ -123,7 +123,7 @@ def main(file_path, num_experiments=1):
     # Generate new random groupings for each experiment
 
     # Calculate subpoint loads for the current grouping
-    df = calculate_subpoints(satellites, start_time, 12, satellite_load_data, 16)
+    df = calculate_subpoints(satellites, start_time, 12, satellite_load_data, 50)
     all_data.append(df)
 
     # Averaging the results
@@ -136,6 +136,6 @@ tle_file_path = 'guowang_tle_suit.txt'
 
 # Running the experiments and getting averaged results
 averaged_df = main(tle_file_path)
-averaged_df.to_csv('datas/dynamic_group_16_experiments_avg_load_12H.csv', index=False)
-print("计算完成，平均结果已保存到 'datas/dynamic_group_16_experiments_avg_load_12H.csv'")
+averaged_df.to_csv('datas/dynamic_group_50_experiments_avg_load_12H.csv', index=False)
+print("计算完成，平均结果已保存到 'datas/dynamic_group_50_experiments_avg_load_12H.csv'")
 
