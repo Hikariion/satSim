@@ -29,8 +29,8 @@ ax.axhline(y=average_ms_ours, color='tab:blue', linestyle='--', label='本文方
 ax.axhline(y=average_ms_reboot, color='tab:orange', linestyle='--', label='中心化方案平均恢复耗时')
 
 # 在平均值线旁边添加数值注释
-plt.annotate(f'{average_ms_ours:.2f} s', xy=(1, average_ms_ours), xytext=(1, average_ms_ours + 0.3), color='tab:blue')
-plt.annotate(f'{average_ms_reboot:.2f} s', xy=(1, average_ms_reboot), xytext=(1, average_ms_reboot + 0.3), color='tab:orange')
+plt.annotate(f'{average_ms_ours:.2f} s', xy=(1, average_ms_ours), xytext=(1, average_ms_ours + 0.3))
+plt.annotate(f'{average_ms_reboot:.2f} s', xy=(1, average_ms_reboot), xytext=(1, average_ms_reboot + 0.3))
 
 # 设置x轴的刻度，确保实验组编号从1到10显示全
 ax.set_xticks(range(1, 11))
@@ -38,6 +38,8 @@ ax.set_xticklabels([str(i) for i in range(1, 11)])
 
 # 添加图例
 ax.legend()
+
+plt.savefig("./node_fail_compare.svg", format='svg', bbox_inches='tight', pad_inches=0.1)
 
 # 显示图形
 plt.show()

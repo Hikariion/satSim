@@ -62,7 +62,6 @@ if __name__ == '__main__':
             for satellite in satellites.values():
                 distance = get_distance(satellite, ground_station, time)
                 if distance < min_distance:
-                    min_distance = distance
                     current_closest_satellite = satellite
             if current_closest_satellite != previous_closest_satellite:
                 migrate_times += 1  # Increment the migration count

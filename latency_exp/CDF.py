@@ -6,7 +6,7 @@ import matplotlib as mpl
 mpl.rcParams['figure.dpi'] = 200
 plt.rcParams["font.sans-serif"] = ['simsun']  # 设置字体
 plt.rcParams["axes.unicode_minus"] = False  # 解决负号乱码问题
-plt.rcParams.update({'font.size': 8})
+plt.rcParams.update({'font.size': 12})
 
 def plot_cdf(file_path, label):
     loaded_distances = np.load(file_path)
@@ -51,7 +51,7 @@ def plot_cdf(file_path, label):
 
 
 # 绘制CDF图
-plt.figure(figsize=(6, 6))
+plt.figure(figsize=(8, 4))
 
 # 绘制 closest_distances 的CDF Nearest Distance First
 plot_cdf('datas/minDist_average_distance.npy', '最短距离迁移策略')
@@ -66,8 +66,11 @@ plot_cdf('datas/propose_average_delay_times_1hop_4ms.npy', '基于时延约束�
 plot_cdf('datas/propose_average_delay_times_2hop_4ms.npy', '基于时延约束的迁移策略-2hop')
 
 # plt.title('卫星计算时延的累积分布函数 (CDF)')
-plt.xlabel('时延(ms)', fontsize=9)
+plt.xlabel('时延(ms)')
 plt.ylabel('CDF')
 plt.grid(False)
 plt.legend()
+
+plt.savefig("./migrate_solution_compare.svg", format='svg', bbox_inches='tight', pad_inches=0.1)
+
 plt.show()

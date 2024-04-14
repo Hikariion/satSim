@@ -9,17 +9,15 @@ from datetime import datetime, timedelta
 mpl.rcParams['figure.dpi'] = 200
 plt.rcParams["font.sans-serif"]=['simsun']  # 设置字体
 plt.rcParams["axes.unicode_minus"]=False  # 解决负号乱码问题
-plt.rcParams.update({'font.size': 8})
+plt.rcParams.update({'font.size': 9})
 
 # 文件路径列表
 file_paths = [
     'datas/satellite_orbit_group_load_12H_suit.csv',
     'datas/fixed_group_16_experiments_avg_load_12H.csv',
-    'datas/random_group_16_experiments_avg_load_12H.csv',
+    # 'datas/random_group_16_experiments_avg_load_12H.csv',
     'datas/dynamic_group_16_experiments_avg_load_12H.csv',
     'datas/dynamic_genetics_16_experiments_avg_load_12H.csv',
-
-
 ]
 
 # 标签列表
@@ -28,12 +26,11 @@ labels = [
 
     'Fixed',
 
-    'Random',
+    # 'Random',
 
     'Greedy',
 
     'SLFDG',
-
 
 ]
 
@@ -45,8 +42,8 @@ for file_path, label in zip(file_paths, labels):
     average = np.mean(smoothed_data)
     peak = smoothed_data.max()
 
-    plt.plot(data['Timestamp'], smoothed_data, label=label)  # 绘制折线图
-    plt.axhline(y=average, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
+    plt.plot(data['Timestamp'], smoothed_data, label=label, linewidth=1.0)  # 绘制折线图
+    plt.axhline(y=average, color=plt.gca().get_lines()[-1].get_color(), linestyle='--', linewidth=1.0)
     # plt.axhline(y=peak, color=plt.gca().get_lines()[-1].get_color(), linestyle='--')
     # if label == 'grouped by LCASC':
     #     plt.annotate('{:.4f}'.format(average), xy=(data['Timestamp'][10], average), xytext=(data['Timestamp'][10], average - 6))
@@ -77,5 +74,6 @@ plt.gcf().autofmt_xdate()
 plt.legend()
 # plt.title('50组')
 
+plt.savefig("./datas/16组.svg", format='svg', bbox_inches='tight', pad_inches=0.1)
 # 显示图表
 plt.show()
