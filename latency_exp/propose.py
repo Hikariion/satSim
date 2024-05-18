@@ -254,7 +254,7 @@ def get_delay(sequence):
 
 if __name__ == '__main__':
 
-    hops = 1
+    hops = 2
 
     coords = np.load('random_coords.npy')
 
